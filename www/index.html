@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My IP is</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        /* Simple CSS Reset */
+        body, h1, h2, h3, p {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 20px;
+            text-align: center;
+        }
+
+        header img {
+            max-width: 30%;
+            height: auto;
+        }
+
+       .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px; /* Added margin for increased distance */
+        }
+
+
+        .ip-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px; /* Added margin for increased distance */
+        }
+
+        .ip-address {
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        .ip-address:hover {
+            background-color: #f5f5f5;
+        }
+
+        .copy-message {
+            margin-top: 10px;
+            color: green;
+            font-weight: bold;
+ 
+       }
+
+
+        footer {
+            position: fixed; /* Set position to fixed */
+/*            position: absolute; */
+            bottom: 0;
+            left: 0; /* Docked to the left */
+            width: 100%; /* Set width to 100% of the screen */
+            margin-top: 20px;
+            background-color: #757575;
+            color: #fff;
+            text-align: center;
+        }
+
+        footer a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+
+    </style>
+</head>
+<body>
+
+ <header>
+        <img src="logo.png" alt="Logo">
+
+    <div class="container">
+        <div class="text-left">
+            <h2>Deine IPv4 und IPv6 Adressen lauten:</h2>
+        <p>Klicken um in Zwischenablage zu kopieren.</p>
+
+        </div>
+
+    </header>
+
+    <div class="ip-container">
+        <div class="ip-address" data-ajax="https://ipv4.example.tld/ip.php" id="v4">
+            wird abgerufen...
+        </div>
+        <div class="ip-address" data-ajax="https://ipv6.example.tld/ip.php" id="v6">
+            wird abgerufen...
+        </div>
+            <div class="copy-message" id="copyMessage"></div>
+    </div>
+
+    <footer>
+        <p>© 2024 example Corp</p>
+        <a href="https://example.tld/impressum/" target="_blank">Impressum</a>
+        <a href="http://example.tld/datenschutz" target="_blank">Datenschutz</a>
+        <a href="http://example.tld/agb" target="_blank">AGB</a>
+    </footer>
+
+    <script>
+        // Function to copy text to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    $("#copyMessage").text("IP address copied to clipboard: " + text).css("color", "green");
+                    setTimeout(function() {
+                        $("#copyMessage").text("").css("color", "green");
+                    }, 3000); // Clear message after 3 seconds
+                })
+                .catch(() => {
+                    $("#copyMessage").text("Unable to copy IP address to clipboard.").css("color", "red");
+                    setTimeout(function() {
+                        $("#copyMessage").text("").css("color", "red");
+                    }, 3000); // Clear message after 3 seconds
+                });
+        }
+
+        // Function to handle the click event and copy IP address
+        function handleCopyClick(elementId) {
+            var ipAddress = $("#" + elementId).text();
+            copyToClipboard(ipAddress);
+        }
+
+        // IPv4 AJAX request
+        var urlV4 = $("#v4").attr("data-ajax");
+        $.ajax({
+            url: urlV4,
+            context: document.body,
+            success: function (result) {
+                $("#v4").text(result);
+            },
+            error: function () {
+                $("#v4").text("konnte nicht abgerufen werden");
+            }
+        });
+
+        // IPv6 AJAX request
+        var urlV6 = $("#v6").attr("data-ajax");
+        $.ajax({
+            url: urlV6,
+            context: document.body,
+            success: function (result) {
+                $("#v6").text(result);
+            },
+            error: function () {
+                $("#v6").text("konnte nicht abgerufen werden");
+            }
+        });
+
+        // Attach click event to IPv4 cell for copying
+        $("#v4").on("click", function () {
+            handleCopyClick("v4");
+        });
+
+        // Attach click event to IPv6 cell for copying
+        $("#v6").on("click", function () {
+            handleCopyClick("v6");
+        });
+    </script>
+</body>
+</html>
